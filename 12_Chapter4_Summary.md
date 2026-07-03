@@ -9,29 +9,8 @@
 
 도커 이미지를 만들고, 배포하고, 실행하는 3단계 핵심 사이클입니다.
 
-```mermaid
-graph TD
-    subgraph 1. 빌드 (Build)
-        DF[📄 Dockerfile<br/>(인프라 설계도)] -->|docker build .| IM((🐳 도커 이미지<br/>내 컴퓨터))
-        APP[💻 app.py<br/>(소스코드)] -.->|Build Context 전송| IM
-    end
-    
-    subgraph 2. 배포 (Registry)
-        IM -->|docker push| HUB[☁️ Docker Hub<br/>(변경된 Layer만 차분 업로드)]
-    end
-    
-    subgraph 3. 실행 (Runtime)
-        HUB -->|docker pull| SVR[🖥️ 운영 서버]
-        SVR -->|docker run| C1[🟢 컨테이너 A]
-        SVR -->|docker run| C2[🟢 컨테이너 B]
-    end
-    
-    style DF fill:#f9fbe7,stroke:#827717
-    style IM fill:#e0f7fa,stroke:#006064
-    style HUB fill:#e3f2fd,stroke:#1565c0
-    style C1 fill:#e8f5e9,stroke:#2e7d32
-    style C2 fill:#e8f5e9,stroke:#2e7d32
-```
+<img width="255" height="745" alt="image" src="https://github.com/user-attachments/assets/6c7b4d21-0538-4f9a-aa36-7cf8de93896b" />
+
 
 ---
 
