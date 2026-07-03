@@ -12,22 +12,11 @@
 이 말이 무슨 뜻인지 가상머신(VM)과 비교해 보겠습니다.
 
 **[🖥️ 가상머신(VM) vs 🐳 컨테이너(Container) 아키텍처 비교]**
-```mermaid
-graph TD
-    subgraph 🖥️ 가상머신 (VM)
-        VM_OS[Guest OS 부팅<br/>수십 초~수 분 소요<br/>메모리 GB 단위 차지]
-        VM_Init[PID 1: systemd<br/>운영체제 전체 관리]
-        VM_App[PID 100: 내 프로그램<br/>app.py]
-        VM_OS --> VM_Init --> VM_App
-    end
 
-    subgraph 🐳 도커 컨테이너
-        C_Wrap[도커 엔진이 만든 얇은 격리 벽]
-        C_App[PID 1: 내 프로그램<br/>app.py]
-        C_Wrap --> C_App
-    end
-```
-* **VM:** 컴퓨터 안에 또 다른 거대한 윈도우/리눅스를 통째로 설치합니다. 부팅만 한참 걸리며, 메인 관리자(PID 1)가 존재하고 내 프로그램은 그 밑에서 돕는 역할(PID 100)을 합니다. 내 프로그램이 죽어도 윈도우(OS)는 계속 켜져 있습니다.
+<img width="542" height="387" alt="image" src="https://github.com/user-attachments/assets/ecc72d56-2004-4ed6-bce7-1a75c705bb87" />
+
+ 
+ **VM:** 컴퓨터 안에 또 다른 거대한 윈도우/리눅스를 통째로 설치합니다. 부팅만 한참 걸리며, 메인 관리자(PID 1)가 존재하고 내 프로그램은 그 밑에서 돕는 역할(PID 100)을 합니다. 내 프로그램이 죽어도 윈도우(OS)는 계속 켜져 있습니다.
 * **컨테이너:** 내 컴퓨터(Host)의 OS를 그대로 빌려 쓰면서, 오직 내 프로그램(`app.py`) 하나만 딸랑 실행시킵니다. 즉, **내 프로그램 자체가 곧 시스템의 중심(PID 1)이 됩니다.**
 
 리눅스 커널에서 **PID(Process ID) 1번**은 부모를 잃은 고아 프로세스들을 거둬주는 등 시스템 전체를 책임지는 '왕'입니다. 도커의 생명주기 규칙은 아주 단순하고 냉혹합니다. **"왕(PID 1번)이 죽으면, 그 나라(컨테이너)도 즉시 멸망(Exit)한다."**
@@ -39,19 +28,9 @@ graph TD
 `bash`는 "어? 내가 입력을 받을 화면이나 키보드가 없네? 그럼 할 일이 없으니 바로 종료할게!" 라며 즉시 스스로를 종료(Exit)해 버립니다. 왕(`bash`)이 스스로 목숨을 끊었으니, 나라인 컨테이너도 0.1초 만에 종료되는 것입니다.
 
 **[💡 PID 1 종료 원리 시각화]**
-```mermaid
-sequenceDiagram
-    participant User as 사용자
-    participant Docker as 🐳 도커 데몬
-    participant Bash as 🐚 bash (PID 1)
 
-    User->>Docker: docker run ubuntu
-    Docker->>Bash: 1. bash 실행 (터미널 연결 안 해줌)
-    Bash-->>Bash: 2. "키보드가 없네? 할 일 끝!" (스스로 종료)
-    Bash-->>Docker: 3. 프로세스 사망 보고
-    Docker-->>User: 4. 컨테이너 즉시 파괴 (Exited)
-    Note over User, Bash: ※ 만약 계속 살려두고 싶다면 키보드를 억지로 꽂아주는 옵션이 필요합니다.<br/>(docker run -it ubuntu)
-```
+<img width="678" height="339" alt="image" src="https://github.com/user-attachments/assets/07990f0a-c25e-4d1b-8c01-2434a262cbca" />
+
 
 따라서 컨테이너가 24시간 내내 살아서 돌아가게 하려면 Nginx(웹 서버), MySQL(DB 서버)처럼 **터미널 입력이 없어도 백그라운드에서 무한 루프를 돌며 요청을 기다리는 데몬(Daemon) 프로세스**를 PID 1번으로 실행시켜야 합니다. 이 PID 1번 프로세스를 결정하는 명령어가 바로 `CMD`와 `ENTRYPOINT`입니다.
 
@@ -61,37 +40,8 @@ sequenceDiagram
 
 `CMD`와 `ENTRYPOINT`의 차이를 시각적으로 비교해 보겠습니다.
 
-```mermaid
-graph TD
-    subgraph 🟢 CMD의 동작 방식 (쉽게 덮어쓰기 가능)
-        C1["Dockerfile: CMD ['sleep', '5']"]
-        
-        C2["명령어: docker run ubuntu-sleeper"]
-        C3["명령어: docker run ubuntu-sleeper sleep 10"]
-        
-        C1 -.-> C2
-        C1 -.-> C3
-        
-        C2 ==>|"CMD 그대로 실행"| R1(("실행: sleep 5"))
-        C3 ==>|"입력값으로 완전 교체 (Override)"| R2(("실행: sleep 10"))
-    end
+<img width="956" height="467" alt="image" src="https://github.com/user-attachments/assets/76d70be8-c56f-4bcd-b6e1-5c18059d009b" />
 
-    subgraph 🔵 ENTRYPOINT의 동작 방식 (뒤에 이어붙이기)
-        E1["Dockerfile: ENTRYPOINT ['sleep']"]
-        
-        E2["명령어: docker run ubuntu-sleeper 10"]
-        
-        E1 -.-> E2
-        E2 ==>|"ENTRYPOINT + 파라미터 조합"| RE(("실행: sleep 10"))
-    end
-    
-    style C2 fill:#fff3e0,stroke:#e65100
-    style C3 fill:#fff3e0,stroke:#e65100
-    style R2 fill:#ffebee,stroke:#c62828
-    
-    style E2 fill:#e3f2fd,stroke:#1565c0
-    style RE fill:#e8f5e9,stroke:#2e7d32
-```
 
 ---
 
