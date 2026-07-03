@@ -21,37 +21,9 @@
 실무 환경에서는 보안을 위해 외부 사용자가 접근할 수 있는 망(Frontend)과 내부 DB들끼리만 통신하는 망(Backend)을 완벽하게 분리해야 합니다.
 
 **[🌐 Voting App의 망 분리(Network Isolation) 아키텍처]**
-```mermaid
-graph TD
-    User((🧑 사용자와 브라우저))
-    
-    subgraph 🟢 Frontend Network (외부 공개망)
-        Vote[🗳️ Voting App<br/>(Python / Port 5000)]
-        Result[📊 Result App<br/>(Node.js / Port 5001)]
-    end
-    
-    subgraph 🔴 Backend Network (내부 폐쇄망)
-        Redis[(📦 Redis<br/>In-memory Queue)]
-        Worker[⚙️ Worker<br/>(.NET 백그라운드)]
-        DB[(🗄️ PostgreSQL<br/>영구 DB)]
-    end
 
-    User -->|투표하기 (포트 5000)| Vote
-    User -->|결과보기 (포트 5001)| Result
-    
-    Vote -->|1. 투표 데이터 빠르게 적재| Redis
-    Redis -.->|2. Worker가 무한 루프 돌며 데이터 가져감| Worker
-    Worker -->|3. 연산 후 영구 데이터베이스에 최종 저장| DB
-    Result -->|4. 데이터베이스에서 최종 통계 조회| DB
-    
-    style Frontend fill:#e8f5e9,stroke:#2e7d32
-    style Backend fill:#ffebee,stroke:#c62828
-    style Vote fill:#fff,stroke:#333
-    style Result fill:#fff,stroke:#333
-    style Worker fill:#fff,stroke:#333
-    style Redis fill:#fff,stroke:#333
-    style DB fill:#fff,stroke:#333
-```
+<img width="297" height="759" alt="image" src="https://github.com/user-attachments/assets/8c90f9b1-a8fb-4b0a-b933-a3ea592e420c" />
+
 
 **[🔍 딥 다이브: 백엔드 3대장(Redis, Worker, DB)은 어떻게 맞물려 돌아가는가?]**
 이 데모 앱은 대용량 트래픽을 처리하는 실무 아키텍처의 축소판입니다.
