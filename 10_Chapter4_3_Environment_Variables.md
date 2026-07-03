@@ -91,33 +91,9 @@ docker run -d -p 5001:5000 -e APP_COLOR=blue shinwookkang03/my-simple-webapp
 이를 해결하기 위해 최신 실무 환경에서는 **`.env` 파일**과 **`--env-file` 옵션**을 조합하는 방식을 표준으로 사용합니다. 아래 시각화 다이어그램으로 보안 아키텍처 원리를 완벽하게 이해해 보세요!
 
 **[🔒 안전한 실무 환경 변수 관리 아키텍처]**
-```mermaid
-graph TD
-    subgraph 내 컴퓨터 (Local)
-        E[".env 파일 (비밀번호 모음)"]
-        G[".gitignore 파일"]
-        S["소스 코드 (app.py)"]
-        
-        E -.->|"1. .gitignore에 등록됨<br/>(Git 추적 원천 차단)"| G
-    end
 
-    subgraph Github (Public)
-        GH[☁️ Github 저장소]
-    end
+<img width="560" height="694" alt="image" src="https://github.com/user-attachments/assets/bc7f7133-52a3-4174-b665-f13bc17ab521" />
 
-    subgraph 도커 컨테이너 (서버)
-        D(("🐳 실행 중인 컨테이너<br/>docker run --env-file .env"))
-    end
-
-    S ==>|"2. 코드만 Push 됨"| GH
-    E -.->|❌ Github 업로드 절대 차단| GH
-    E ==>|"3. Run 할 때 파일째로 통째 주입"| D
-    S ==>|"이미지화"| D
-    
-    style E fill:#ffebee,stroke:#c62828
-    style GH fill:#e3f2fd,stroke:#1565c0
-    style D fill:#e8f5e9,stroke:#2e7d32
-```
 
 1. **`.env` 파일 작성:** 프로젝트 폴더에 `.env`라는 이름의 텍스트 파일을 만들고, 안에 `DB_PASSWORD=1234`를 적어둡니다.
 2. **`.gitignore`에 등록:** 깃허브에 코드를 올릴 때 실수로 비밀 파일이 딸려 올라가지 못하도록, `.gitignore` 파일에 `.env`를 꾹꾹 눌러 적어줍니다. (해커의 접근 원천 차단!)
