@@ -62,28 +62,8 @@ sequenceDiagram
 
 하드코딩 방식과 환경 변수 방식의 아키텍처 차이를 직관적으로 비교해 보겠습니다.
 
-```mermaid
-graph TD
-    subgraph ❌ 하드코딩 방식 (안티 패턴)
-        A1[소스코드 수정<br/>color='blue'] -->|수정될 때마다 다시| B1((docker build<br/>이미지 재성성))
-        B1 --> C1[docker push<br/>버전 2.0 배포]
-    end
+<img width="797" height="603" alt="image" src="https://github.com/user-attachments/assets/6d641f74-50ce-4d6b-9711-5e3813167dec" />
 
-    subgraph ✅ 환경 변수 방식 (실무 아키텍처)
-        A2[소스코드<br/>color=os.environ.get'APP_COLOR'] -->|한 번만 빌드| B2((docker build<br/>불변 이미지 생성))
-        B2 -->|실행 시점에 주입| C2[docker run -e APP_COLOR=blue<br/>컨테이너 A (파란색)]
-        B2 -->|실행 시점에 주입| D2[docker run -e APP_COLOR=green<br/>컨테이너 B (초록색)]
-    end
-    
-    style A1 fill:#ffebee,stroke:#c62828
-    style B1 fill:#ffebee,stroke:#c62828
-    style C1 fill:#ffebee,stroke:#c62828
-    
-    style A2 fill:#e8f5e9,stroke:#2e7d32
-    style B2 fill:#e8f5e9,stroke:#2e7d32
-    style C2 fill:#e3f2fd,stroke:#1565c0
-    style D2 fill:#e3f2fd,stroke:#1565c0
-```
 
 ---
 
