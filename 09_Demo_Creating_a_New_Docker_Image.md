@@ -29,20 +29,8 @@ graph LR
 맥북(호스트)의 터미널에서 이 명령을 치면, 현재 폴더에 있는 모든 파일(`app.py`, `Dockerfile` 등)이 백그라운드에 숨어있는 **도커 데몬(Docker Daemon)** 프로세스로 통째로 묶여 전송됩니다. 도커 데몬은 이 파일들을 가지고 격리된 가상 공간에서 `Dockerfile`의 명령어를 한 줄씩 실행하며 무쇠 붕어빵 틀(Image)을 깎아냅니다. 이때, 각 줄이 실행될 때마다 중간 저장소(Intermediate Layer)에 해시값을 가진 레이어가 저장되며, 이것이 바로 **레이어 캐싱**의 원천이 됩니다.
 
 **[Build Context 전송 시각화]**
-```mermaid
-graph LR
-    subgraph 내 맥북 (현재 터미널 폴더: .)
-        F1[app.py]
-        F2[Dockerfile]
-    end
-    subgraph 도커 데몬 (Docker Engine 백그라운드)
-        D1((도커 빌드 공장))
-        L[레이어 캐시 저장소]
-    end
-    
-    F1 & F2 -->|docker build . 를 치는 순간<br/>통째로 압축되어 전송 (Context)| D1
-    D1 -->|명령어 한 줄마다| L
-```
+<img width="1005" height="276" alt="image" src="https://github.com/user-attachments/assets/1404f812-b8fb-44d6-92cf-78aff0ac5553" />
+
 
 ### 💡 1.3 Registry (Docker Hub) 분산 저장소 원리
 빌드된 이미지는 내 맥북 하드디스크에만 존재합니다. 이 무거운 이미지(수백 MB)를 다른 서버로 배포할 때 파일 채로 USB에 담아 복사하는 것은 불가능합니다.
