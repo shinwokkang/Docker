@@ -19,35 +19,9 @@
 이러한 고차원적인 인프라 설계를 기존의 평면 구조 파일로는 도저히 감당할 수 없었습니다. 그래서 도커 팀은 과감하게 **최상단(Root Level)을 3개의 커다란 방(`services`, `networks`, `volumes`)으로 쪼개는 구조적 계층화(Hierarchical) 작업**을 단행했습니다. 
 
 **[📦 Compose V1 (과거) vs V3 (현대) 파일 구조 비교 시각화]**
-```mermaid
-graph TD
-    subgraph "과거 (V1 Flat 구조)"
-        V1_Root((최상단)) --> V1_App1[vote 컨테이너]
-        V1_Root --> V1_App2[redis 컨테이너]
-        V1_Root --> V1_App3[db 컨테이너]
-        style V1_Root fill:#ffcdd2,stroke:#c62828
-    end
 
-    subgraph "현대 (V3+ 계층형 아키텍처)"
-        V3_Root((최상단)) --> Services{services<br>(앱 실행 공간)}
-        V3_Root --> Networks{networks<br>(가상 통신망 공간)}
-        V3_Root --> Volumes{volumes<br>(데이터 영구 보존 공간)}
-        
-        Services --> V3_App1[vote]
-        Services --> V3_App2[redis]
-        Services --> V3_App3[db]
-        
-        Networks --> Net1[front-tier 망]
-        Networks --> Net2[back-tier 망]
-        
-        Volumes --> Vol1[db-data 하드디스크]
-        
-        style V3_Root fill:#c8e6c9,stroke:#2e7d32
-        style Services fill:#bbdefb,stroke:#1565c0
-        style Networks fill:#e1bee7,stroke:#6a1b9a
-        style Volumes fill:#ffe0b2,stroke:#ef6c00
-    end
-```
+<img width="1305" height="545" alt="image" src="https://github.com/user-attachments/assets/a6969149-315a-4668-ac4a-e236b7b494d4" />
+
 
 이제 모든 앱(컨테이너)들은 `services`라는 전용 방 안에 깔끔하게 격리되어 모이게 되었고, 이 앱들이 밖으로 나와 동급 레벨에 있는 `networks`와 `volumes`를 가져다 쓰는 **객체 간의 완벽한 분업화와 모듈화**가 이루어진 것입니다. 이것이 우리가 `version: '3'`을 쓰면서 반드시 탭(Tab)으로 들여쓰기를 해야 했던 진짜 이유입니다.
 
