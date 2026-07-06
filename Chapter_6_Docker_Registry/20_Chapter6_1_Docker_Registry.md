@@ -14,29 +14,9 @@
 * **Docker Compose (레시피 매니저):** 요리사에게 "A밀키트 까고, B밀키트 까서 둘이 섞어!" 라고 적어둔 주문서(`docker-compose.yml`).
 
 **[🌐 생태계 개념 완벽 연결도]**
-```mermaid
-graph TD
-    subgraph "하늘 (Cloud)"
-        Hub[Docker Hub<br>(세계 최대의 Registry)]
-        Private[사내 Private Registry<br>(우리 회사 전용 창고)]
-    end
 
-    subgraph "내 노트북 (Local)"
-        Compose[Docker Compose<br>(주문서)] -->|명령 내림| Engine
-        Engine[Docker Engine<br>(요리사)]
-    end
+<img width="473" height="645" alt="image" src="https://github.com/user-attachments/assets/5605c252-1436-45d7-aa81-99645994a485" />
 
-    Hub -.->|이미지 다운로드(Pull)| Engine
-    Private -.->|이미지 다운로드(Pull)| Engine
-    
-    Engine --> C1[컨테이너 1]
-    Engine --> C2[컨테이너 2]
-
-    style Hub fill:#e3f2fd,stroke:#1565c0
-    style Private fill:#fff3e0,stroke:#e65100
-    style Engine fill:#e8f5e9,stroke:#2e7d32
-    style Compose fill:#f3e5f5,stroke:#7b1fa2
-```
 
 ---
 
@@ -49,16 +29,9 @@ graph TD
 실무에서는 사용자가 웹사이트에 접속할 때 가장 먼저 만나는 **"최전방 수문장"** 역할을 합니다. 뒷단에 있는 투표 앱(Python)이나 결과 앱(Node.js)을 외부 해커로부터 보호하고, 트래픽이 몰릴 때 여러 앱으로 분산시켜 주는 필수 요소입니다.
 
 **[🧱 Nginx의 실무 아키텍처 역할]**
-```mermaid
-graph LR
-    User((인터넷 접속자)) -->|HTTP 요청| Nginx[NGINX<br>(수문장 / 웹서버)]
-    
-    Nginx -->|투표 요청| Vote[Vote App (Python)]
-    Nginx -->|결과 조회| Result[Result App (Node.js)]
-    
-    style Nginx fill:#81c784,stroke:#2e7d32
-    style User fill:#e0e0e0,stroke:#616161
-```
+
+<img width="822" height="202" alt="image" src="https://github.com/user-attachments/assets/2b699687-85fb-48bd-a66e-00a13ebe3925" />
+
 
 ### 🔍 이미지 이름이 길어지는 마법의 분기(Flow)
 우리가 `nginx`라고 짧게 쳐도 도커가 알아서 인터넷에서 이미지를 찾아오는 이유는, 내부에 **자동 이름 채우기(Auto-fill) 로직**이 있기 때문입니다. 도커 엔진 내부에서는 다음과 같이 해석됩니다.
@@ -143,22 +116,6 @@ flowchart TD
 날것의 `registry:2` 이미지는 까만 터미널 창밖에 없어서 회사에서 다 같이 쓰기 너무 불편합니다. 그래서 실무에서는 오픈소스인 Harbor를 다운받아 사내 공용 서버에 설치합니다. **결론적으로 사내망에 깃허브나 도커 허브 같은 예쁜 웹사이트를 직접 차리는 것**입니다.
 
 **[🚢 엔터프라이즈 Registry (Harbor) 구조]**
-```mermaid
-graph TD
-    subgraph "사내 공용 서버 (예: 192.168.1.100)"
-        Harbor[Harbor (기업용 Registry 솔루션)]
-        
-        UI[웹 브라우저 UI 제공<br>(마우스 클릭 관리)]
-        Scan[바이러스 백신<br>(이미지 해킹 검사)]
-        RBAC[권한 관리<br>(신입사원은 다운로드만 가능)]
-        
-        Harbor --- UI
-        Harbor --- Scan
-        Harbor --- RBAC
-    end
 
-    Dev1((개발자 A)) -->|이미지 올리기 (Push)| Harbor
-    Dev2((개발자 B)) -->|이미지 다운 (Pull)| Harbor
-    
-    style Harbor fill:#bbdefb,stroke:#1565c0
-```
+<img width="697" height="476" alt="image" src="https://github.com/user-attachments/assets/0d3be228-aa6c-41f7-9a3f-b59524f05236" />
+
