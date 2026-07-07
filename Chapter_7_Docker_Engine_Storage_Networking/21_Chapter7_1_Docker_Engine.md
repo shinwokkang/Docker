@@ -26,24 +26,9 @@
 **결과적으로, 이제는 `Docker Daemon`이 죽거나 재시작되어도 `containerd`가 컨테이너들의 실행 상태를 굳건히 유지시켜 주어 무중단 서비스가 가능해졌습니다.**
 
 **[🔥 무중단 서비스(Zero-downtime) 실무 아키텍처 시각화]**
-```mermaid
-graph TD
-    subgraph "상황: 도커 업데이트 중 (데몬 다운)"
-        Daemon[💀 Docker Daemon<br>(업데이트 중... 통신 두절)]
-        
-        subgraph "컨테이너 런타임 (독립 생존 구역)"
-            Containerd[🛡️ containerd<br>(여전히 살아있음!)]
-            Runc1[runc] -.-> C1((운영 중인<br>웹 서버))
-            Runc2[runc] -.-> C2((운영 중인<br>DB 서버))
-            
-            Containerd --> Runc1
-            Containerd --> Runc2
-        end
-    end
-    
-    style Daemon fill:#ffcdd2,stroke:#c62828,color:#c62828
-    style Containerd fill:#c8e6c9,stroke:#2e7d32
-```
+
+<img width="598" height="463" alt="image" src="https://github.com/user-attachments/assets/b7a10c4b-6be8-4b19-b80d-dcb470bf4194" />
+
 * 위 그림처럼 메인 관리자(Daemon)가 죽어도, 밑에서 일하는 `containerd`는 완전히 독립된 프로세스이므로 기존에 돌아가던 웹 서버와 DB 서버는 **단 1초의 멈춤 없이** 계속해서 고객들에게 서비스를 제공할 수 있습니다!
 
 ---
