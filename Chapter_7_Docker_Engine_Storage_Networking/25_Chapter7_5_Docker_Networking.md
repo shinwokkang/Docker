@@ -28,11 +28,11 @@
 ```mermaid
 graph TD
     subgraph "Bridge 모드 (아파트)"
-        HostB[Docker Host (IP: 192.168.1.10)]
-        PortFW[포트 포워딩<br>-p 8080:80]
+        HostB["Docker Host (IP: 192.168.1.10)"]
+        PortFW["포트 포워딩<br>-p 8080:80"]
         
         subgraph "격리된 내부 네트워크 (172.17.x.x)"
-            ConB[Web Container<br>내부 포트 80]
+            ConB["Web Container<br>내부 포트 80"]
         end
         
         HostB --> PortFW
@@ -40,15 +40,15 @@ graph TD
     end
     
     subgraph "Host 모드 (단독주택)"
-        HostH[Docker Host (IP: 192.168.1.10)]
-        ConH[Web Container<br>포트 5000 다이렉트 개방]
+        HostH["Docker Host (IP: 192.168.1.10)"]
+        ConH["Web Container<br>포트 5000 다이렉트 개방"]
         
         HostH === ConH
-        note[격리 벽이 없고 네트워크 100% 공유] -.-> ConH
+        note["격리 벽이 없고 네트워크 100% 공유"] -.-> ConH
     end
     
-    User1((외부 사용자)) -- "접속: 192.168.1.10:8080" --> HostB
-    User2((외부 사용자)) -- "접속: 192.168.1.10:5000" --> HostH
+    User1(("외부 사용자")) -- "접속: 192.168.1.10:8080" --> HostB
+    User2(("외부 사용자")) -- "접속: 192.168.1.10:5000" --> HostH
     
     style PortFW fill:#ffe0b2,stroke:#ef6c00
     style ConB fill:#bbdefb,stroke:#1565c0
@@ -93,16 +93,16 @@ graph TD
     subgraph "Docker Host (운영 서버)"
         
         subgraph "Frontend Network (외부 공개용)"
-            React[React Web UI]
+            React["React Web UI"]
         end
         
         subgraph "Backend Network (내부 통신용)"
-            Spring[Spring Boot API]
+            Spring["Spring Boot API"]
         end
         
         subgraph "Database Network (철통 보안)"
-            MySQL[(MySQL DB)]
-            Redis[(Redis Cache)]
+            MySQL[("MySQL DB")]
+            Redis[("Redis Cache")]
         end
         
         React -- "API 호출" --> Spring
@@ -114,8 +114,8 @@ graph TD
         
     end
     
-    User((일반 사용자)) -- "웹 접속 (Port 80)" --> React
-    Hacker((해커)) -. "DB 직접 해킹 시도" .-x MySQL
+    User(("일반 사용자")) -- "웹 접속 (Port 80)" --> React
+    Hacker(("해커")) -. "DB 직접 해킹 시도" .-x MySQL
     
     style React fill:#bbdefb,stroke:#1565c0
     style Spring fill:#c8e6c9,stroke:#388e3c
