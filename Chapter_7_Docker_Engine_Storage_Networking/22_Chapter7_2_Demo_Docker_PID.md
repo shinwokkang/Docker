@@ -76,13 +76,13 @@ root     15023  2045  1 09:00 ?        00:00:02 /usr/local/openjdk-17/bin/java -
 ```mermaid
 graph TD
     subgraph "수강생님의 물리적 맥북 (macOS)"
-        MacPS[Mac의 프로세스들<br>카카오톡, 크롬...]
+        MacPS["Mac의 프로세스들<br>카카오톡, 크롬..."]
         
         subgraph "숨겨진 리눅스 가상머신 (Docker Desktop이 만든 공간)"
-            LinuxPS[Linux 커널 및 프로세스들]
+            LinuxPS["Linux 커널 및 프로세스들"]
             
             subgraph "Tomcat 컨테이너 (Namespace 격리)"
-                Tomcat[Tomcat 실행 중<br>내부 신분증: PID 1<br>외부(Linux) 신분증: PID 15023]
+                Tomcat["Tomcat 실행 중<br>내부 신분증: PID 1<br>외부(Linux) 신분증: PID 15023"]
             end
         end
     end
