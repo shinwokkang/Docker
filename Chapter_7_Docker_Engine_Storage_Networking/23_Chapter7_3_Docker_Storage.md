@@ -27,11 +27,11 @@ Dockerfile의 각 명령어(`FROM`, `RUN`, `COPY` 등)는 핫케이크를 쌓듯
 **[🥞 이미지 레이어 시각화]**
 ```mermaid
 graph BT
-    L1[Layer 1: Ubuntu OS Base (120MB) <br> FROM ubuntu]
-    L2[Layer 2: apt 패키지 설치 (300MB) <br> RUN apt-get install python3]
-    L3[Layer 3: Python 라이브러리 <br> RUN pip install flask]
-    L4[Layer 4: 내 소스코드 복사 <br> COPY . /app]
-    L5[Layer 5: 시작 명령 <br> ENTRYPOINT]
+    L1["Layer 1: Ubuntu OS Base (120MB) <br> FROM ubuntu"]
+    L2["Layer 2: apt 패키지 설치 (300MB) <br> RUN apt-get install python3"]
+    L3["Layer 3: Python 라이브러리 <br> RUN pip install flask"]
+    L4["Layer 4: 내 소스코드 복사 <br> COPY . /app"]
+    L5["Layer 5: 시작 명령 <br> ENTRYPOINT"]
     
     L1 --> L2 --> L3 --> L4 --> L5
     
@@ -68,15 +68,15 @@ graph BT
 ```mermaid
 graph TD
     subgraph "물리 서버 1대 내부"
-        Base[1GB짜리 원본 이미지<br>(모두가 공유하는 단 1개의 굳건한 기반)]
+        Base["1GB짜리 원본 이미지<br>(모두가 공유하는 단 1개의 굳건한 기반)"]
         
-        C1[컨테이너 1<br>Read-Write 유리판]
-        C2[컨테이너 2<br>Read-Write 유리판]
-        C3[컨테이너 3~100<br>Read-Write 유리판]
+        C1["컨테이너 1<br>Read-Write 유리판"]
+        C2["컨테이너 2<br>Read-Write 유리판"]
+        C3["컨테이너 3~100<br>Read-Write 유리판"]
         
-        C1 -->|원본 공유| Base
-        C2 -->|원본 공유| Base
-        C3 -->|원본 공유| Base
+        C1 -->|"원본 공유"| Base
+        C2 -->|"원본 공유"| Base
+        C3 -->|"원본 공유"| Base
     end
     
     style Base fill:#bbdefb,stroke:#1565c0
@@ -154,18 +154,18 @@ docker run -d \
 ```mermaid
 graph TD
     subgraph "Host OS (인프라 관리자의 시점)"
-        Upper[UpperDir (해커가 남긴 악성 파일이나 개발자의 보안 패치가 물리적으로 모여있는 곳)]
-        Lower[LowerDir (안전한 원본 OS 레이어 1GB)]
+        Upper["UpperDir (해커가 남긴 악성 파일이나 개발자의 보안 패치가 물리적으로 모여있는 곳)"]
+        Lower["LowerDir (안전한 원본 OS 레이어 1GB)"]
     end
     
     subgraph "해킹당한 웹서버 컨테이너의 시점"
-        Merged[MergedDir (완벽히 합쳐진 폴더)<br>자신이 쪼개져 있는 줄 모른채 서비스 중]
+        Merged["MergedDir (완벽히 합쳐진 폴더)<br>자신이 쪼개져 있는 줄 모른채 서비스 중"]
     end
     
-    Upper -->|합성 마법| Merged
-    Lower -->|합성 마법| Merged
+    Upper -->|"합성 마법"| Merged
+    Lower -->|"합성 마법"| Merged
     
-    Admin((인프라 엔지니어)) -. "컨테이너에 접속하지 않고<br>UpperDir만 조용히 분석 (포렌식)" .-> Upper
+    Admin(("인프라 엔지니어")) -. "컨테이너에 접속하지 않고<br>UpperDir만 조용히 분석 (포렌식)" .-> Upper
     
     style Upper fill:#ffccbc,stroke:#d84315
     style Lower fill:#bbdefb,stroke:#1565c0
