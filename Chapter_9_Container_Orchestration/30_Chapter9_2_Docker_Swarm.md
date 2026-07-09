@@ -16,10 +16,36 @@
 * **역할:** 매니저 노드가 내린 명령을 받아 묵묵히 컨테이너를 실행(run)하는 일꾼들입니다. 
 * **실무 특징:** 실제 사용자의 막대한 트래픽을 온몸으로 받아내는 곳이므로, 서비스 규모가 커지면 워커 노드(물리 서버)의 대수를 수십~수백 대로 늘려나갑니다.
 
-### 💡 클러스터 구축 과정 (Initialization & Join)
-1. 첫 번째 서버에서 `docker swarm init`을 실행하여 스스로를 매니저 노드로 승격시킵니다.
-2. 매니저 노드는 보안 토큰(Join Token)이 포함된 명령어를 출력합니다.
-3. 나머지 서버들에 접속하여 그 토큰 명령어를 복사해 붙여넣으면(`docker swarm join`), 그 서버들은 워커 노드가 되어 매니저의 지휘 아래 편입됩니다.
+### 💡 클러스터 구축 과정 (Initialization & Join) 실제 명령어 흐름
+
+클러스터를 구축하는 과정은 놀랍도록 간단합니다. 단 두 줄의 명령어로 끝납니다.
+
+**1. 매니저 노드 승격 (첫 번째 서버에서 실행)**
+첫 번째 서버(예: 호스트명 `manager-node`)의 터미널을 열고 아래 명령어를 입력하여 스스로를 매니저로 승격시킵니다.
+```bash
+$ docker swarm init --advertise-addr <매니저_IP주소>
+```
+명령어를 실행하면 터미널에 아래와 같이 **보안 토큰(Join Token)**이 포함된 친절한 안내 메시지가 출력됩니다.
+```text
+Swarm initialized: current node (dxn1zl6l...) is now a manager.
+
+To add a worker to this swarm, run the following command:
+
+    docker swarm join --token SWMTKN-1-49nj1cmql0jkz5s954yi3oex3nedyz0fb0xx14ie39trti4wxv-8vxv8rssadf9032... 192.168.99.100:2377
+
+To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+```
+
+**2. 워커 노드 편입 (나머지 깡통 서버들에서 실행)**
+이제 매니저 밑으로 들어갈 두 번째, 세 번째 서버(예: `worker-1`, `worker-2`)에 접속합니다. 그리고 위에서 복사해 둔 토큰 명령어를 그대로 붙여넣고 엔터를 칩니다.
+```bash
+$ docker swarm join --token SWMTKN-1-49nj1cmql0jkz5s954yi3oex3nedyz0fb0xx14ie39trti4wxv-8vxv8rssadf9032... 192.168.99.100:2377
+```
+그러면 즉시 아래와 같은 성공 메시지가 뜹니다.
+```text
+This node joined a swarm as a worker.
+```
+이로써 아무 관계도 없던 여러 대의 깡통 서버들이 하나의 거대한 컴퓨터(스웜 클러스터)로 묶였습니다!
 
 **[Swarm 클러스터 구축 및 역할 시각화]**
 ```mermaid
